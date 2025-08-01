@@ -1,0 +1,186 @@
+body{
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    font-size: 30px;
+    color: #fe3e9f;
+    margin: 10px;
+    padding: 10px;
+    text-align: left;
+}
+
+h1 {
+    color: #4a4a4a;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #4a4a4a;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.ratings-wrapper {
+    border: thin solid #ccc;
+    margin-bottom: 20px;
+    padding: 15px;
+    text-align: left;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ratings-wrapper h4 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #fe3e9f;
+    text-align: left;
+    width: 100%; /* Ensure text takes full width */
+    font-weight: normal; /* To make it less bold than default h4 */
+}
+
+/* Make affirmation text editable */
+.ratings-wrapper h4[contenteditable="true"] {
+    border-bottom: 1px dashed #ccc;
+    outline: none; /* Remove focus outline */
+    cursor: text;
+}
+
+.ratings-wrapper h4[contenteditable="true"]:focus {
+    background-color: #fff9f9;
+}
+
+
+.ratings{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end; /* Align hearts to the right within their container */
+    margin-bottom: 10px;
+}
+
+.ratings span{
+    cursor: pointer;
+    transition: color 0.2s transform 0.2s;
+    font-size: 40px;
+    filter: grayscale(50%);
+    filter: brightness(50%);
+}
+
+.ratings span:hover {
+    transform: scale(1.3);
+    filter: grayscale(0%);
+}
+
+.ratings span:hover ~ span{
+    transform: scale(1);
+    filter: grayscale(0%);
+}
+
+.ratings span[data-clicked]{
+    filter: grayscale(0%);
+}
+
+.ratings span[data-clicked] ~ span{   
+    filter: grayscale(0%);
+}
+
+
+.tags-container {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #e0e0e0;
+    color: #4a4a4a;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 8px;
+    margin-bottom: 5px;
+    font-size: 18px;
+    cursor: default;
+}
+
+.tag-input {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-top: 5px;
+    font-size: 18px;
+}
+
+/* Buttons */
+button {
+    background-color: #fe3e9f;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 10px;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #e02a80;
+}
+
+.action-buttons {
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Center buttons below affirmation */
+}
+
+.navigation-buttons {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.form-section {
+    border: thin solid #ccc;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+}
+
+.form-section label {
+    font-size: 20px;
+    color: #4a4a4a;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-section textarea, .form-section input[type="text"] {
+    width: calc(100% - 20px); /* Adjust for padding */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 18px;
+    box-sizing: border-box; /* Include padding in width */
+}
+
+.form-section button {
+    width: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

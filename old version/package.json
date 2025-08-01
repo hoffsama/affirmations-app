@@ -1,0 +1,28 @@
+{
+  "name": "affirmations-app",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000a\u0000f\u0000f\u0000i\u0000r\u0000m\u0000a\u0000t\u0000i\u0000o\u0000n\u0000s\u0000-\u0000a\u0000p\u0000p\u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoffsama/affirmations-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hoffsama/affirmations-app/issues"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "node-fetch": "^3.0.0",
+    "amqplib": "^0.10.3" 
+  },
+  "homepage": "https://github.com/hoffsama/affirmations-app#readme"
+  
+}
