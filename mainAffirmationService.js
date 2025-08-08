@@ -18,6 +18,20 @@ async function addAffirmation(someAffirmation) {
 }
 
 
+/*Format for affirmation modifications, 
+
+first char is:
+    0 if removing an affirmation, 1 if adding an affirmation, 2 if editing an affirmation
+if editing:
+    second char is:
+        id of the target affirmation
+    third char is:
+        which part of the affirmation to edit, 0 for text, 1 for tags, 2 for ratings
+    next part is:
+        the new value for the part of the affirmation to edit
+*/
+
+
 function getRandomAffirmation(){
     previousAffirmation = currentAffirmation;
     var randAffirmationIndex= Math.floor(Math.random() * affirmationsparsed.length);
@@ -57,7 +71,11 @@ function printMoreInfo(){
 
 function printAffirmationAndOptions(){
     console.log('');
+    console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
+    console.log('');
     console.log(currentAffirmation);
+    console.log('');
+    console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
     console.log('');
     console.log('(a) View an affirmation. NOTE: This is pure random so you may see affirmations you have already seen before affirmations you have not seen yet');
     console.log('(n) Add a new affirmation');
@@ -69,37 +87,63 @@ function printAffirmationAndOptions(){
 }
 
 
+
+function welcomePage(){
+    console.clear();
+    printWelcomeMessage();
+}
+
+function infoPage(){
+    console.clear();
+    printMoreInfo();
+}
+
+function affirmationPage(){
+    console.clear();    
+    getRandomAffirmation();
+    printAffirmationAndOptions();
+}
+
+function previousAffirmationPage(){
+    console.clear();
+    getPreviousAffirmation();
+    printAffirmationAndOptions();
+}
+
+function exitProgram(){
+    console.clear();
+    console.log('Congratulations! You have made your life better! Goodbye :)' );
+    console.log('');
+    process.exit();
+}
+
+function addNewAffirmation(){
+    console.clear();
+    console.log('Enter your new affirmation: ');
+    var affirmation = prompt();
+    addAffirmation(affirmation);
+    console.log('');
+    console.log('Affirmation added successfully!');
+    console.log('');
+    printAffirmationAndOptions();
+}
+
 function action(){
 
-    actionChar = prompt('Desired action: ');
+    userAction = prompt('Desired action: ');
 
-    if(actionChar == 'w'){
-        prinntWelcomeMessage();
-
-    } else if (actionChar == 'i'){
-        printMoreInfo();
-
-    } else if (actionChar == 'a'){
-        getRandomAffirmation();
-        console.clear();
-        printAffirmationAndOptions();
-
-    } else if (actionChar == 'p'){
-        getPreviousAffirmation();
-        console.clear();
-        printAffirmationAndOptions();
-    
-    } else if (actionChar == 'e') {
-        return 0;
-    } else if (actionChar == 'n') {
-        console.clear();
-        console.log('Enter your new affirmation: ');
-        var affirmation = prompt();
-        addAffirmation(affirmation);
-        console.log('');
-        console.log('Affirmation added successfully!');
-        console.log('');
-        printAffirmationAndOptions();
+    if(userAction == 'w'){
+        welcomePage();
+    } else if (userAction == 'i'){
+        infoPage();
+    } else if (userAction == 'a'){
+        affirmationPage();
+    } else if (userAction == 'p'){
+        previousAffirmationPage();
+    } else if (userAction == 'e') {
+        exitProgram();
+    } else if (userAction == 'n') {
+        addNewAffirmation();
     }else{
         console.log('');
         console.log('Invalid input, please try again...');
@@ -114,9 +158,7 @@ function action(){
 
 printWelcomeMessage();
 while(true){
-    if(action() == 0){
-        break;
-    }
+    action();
 }
 
 
