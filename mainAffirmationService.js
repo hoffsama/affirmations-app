@@ -17,8 +17,13 @@ const deleteAffirmationSocket = new zmq.Push();
 deleteAffirmationSocket.connect("tcp://127.0.0.1:3002");
 
 function refreshAffirmations(){
+
     affirmationsjson = fs.readFileSync(path.resolve('.', './affirmation_db.json'), {'encoding': 'utf-8'});
     affirmationsparsed = JSON.parse(affirmationsjson);
+    if(affirmationsjson == null || affirmationsparsed == null || affirmationsjson == "" || affirmationsparsed == "" || affirmationsjson == "[]" || affirmationsparsed == "[]" || affirmationsjson == "{}" || affirmationsparsed == "{}" || affirmationsjson == "[ ]" || affirmationsparsed == "[ ]" || affirmationsjson == "null" || affirmationsparsed == "null" || affirmationsjson == "undefined" || affirmationsparsed == "undefined"){
+        console.log("Affirmation database is empty");
+        return;
+    }
 }
 
 async function addAffirmation(someText) {
@@ -38,6 +43,7 @@ function getRandomAffirmation(){
     refreshAffirmations();
     var randAffirmationIndex= Math.floor(Math.random() * affirmationsparsed.length);
     currentAffirmation = affirmationsparsed[randAffirmationIndex];
+    console.log("currentAffirmation was set to be: ",currentAffirmation);
     return currentAffirmation;
 }
 
@@ -71,8 +77,8 @@ function printMoreInfo(){
     console.log('');
 }
 
-function printAffirmationAndOptions(){
-    getRandomAffirmation();
+function printAffirmationAndOptions(){    
+    console.clear();
     console.log('');
     console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
     console.log('');
@@ -102,11 +108,11 @@ function infoPage(){
 }
 
 function affirmationPage(){  
+    getRandomAffirmation();
     printAffirmationAndOptions();
 }
 
 function previousAffirmationPage(){
-    console.clear();
     getPreviousAffirmation();
     printAffirmationAndOptions();
 }
@@ -120,12 +126,11 @@ function exitProgram(){
 
 function addNewAffirmation(){
     console.clear();
-    console.log('Enter your new affirmation: ');
-    var affirmation = prompt();
-    addAffirmation(affirmation.text);
+    addAffirmation(prompt("Enter your new affirmation: "));
     console.log('');
     console.log('Affirmation added successfully!');
     console.log('');
+    getRandomAffirmation();
     printAffirmationAndOptions();
 }
 
@@ -135,6 +140,7 @@ function deleteAffirmation(){
         console.log('');
         console.log('Affirmation deleted successfully!');
         console.log('');
+        getRandomAffirmation();
         printAffirmationAndOptions();
     }else{
         console.log('');
@@ -187,7 +193,9 @@ function action(){
 
 printWelcomeMessage();
 while(true){
-    action();
+    if (action() == 0){
+        break;
+    }
 }
 
 

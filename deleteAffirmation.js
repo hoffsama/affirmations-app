@@ -2,18 +2,35 @@ const zmq = require("zeromq");
 const fs = require('fs');
 const path = require('path');
 
-var affirmationsjson = fs.readFileSync(path.resolve('.', './affirmation_db.json'), {'encoding': 'utf-8'});
-var affirmationsparsed = JSON.parse(affirmationsjson);
+const db_fname = "affirmation_db.json";
+
+function getAffirmations() {
+    try {
+        const affirmationsJson = fs.readFileSync(path.resolve('.', `./${db_fname}`), { 'encoding': 'utf-8' });
+        return JSON.parse(affirmationsJson);
+    } catch (e) {
+        console.error("Error reading or parsing affirmation database:", e);
+        return [];
+    }
+}
+
+function saveAffirmations(affirmations) {
+    try {
+        fs.writeFileSync(path.resolve('.', `./${db_fname}`), JSON.stringify(affirmations, null, 2));
+    } catch (e) {
+        console.error("Error writing affirmation database:", e);
+    }
+}
 
 function deleteAffirmation(someText) {
-    for (var i = 0; i < affirmationsparsed.length; i++) {
-        if (affirmationsparsed[i].text == someText) {
-            affirmationsparsed.splice(i, 1);
-            console.log("Deleting affirmation:", someText);
-            break;
-        }
+    const affirmations = getAffirmations();
+    const indexToDelete = affirmations.findIndex((affirmation) => affirmation.text === someText);
+    if (indexToDelete !== -1) {
+        affirmations.splice(indexToDelete, 1);
+        saveAffirmations(affirmations);
+    } else {
+        console.log("Issue deleting affirmation");
     }
-    fs.writeFileSync(path.resolve('.', './affirmation_db.json'), JSON.stringify(affirmationsparsed, null, 2));
 }
 
 async function run() {
@@ -27,9 +44,7 @@ async function run() {
         console.log(message);
         if(message.startsWith("delete affirmation:")){
             deleteAffirmation(message.substring(19));
-            affirmationsjson = fs.readFileSync(path.resolve('.', './affirmation_db.json'), {'encoding': 'utf-8'});
-            affirmationsparsed = JSON.parse(affirmationsjson);
-            console.log("Affirmation log updated: ", affirmationsparsed);
+            console.log("Affirmation log updated: ", getAffirmations());
         } else if(message.startsWith("exit")){
             console.log("Worker exiting...");   
             break;
@@ -38,5 +53,7 @@ async function run() {
         }
     }
 }
+
+
 
 run();
