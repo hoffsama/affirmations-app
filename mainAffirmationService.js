@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const prompt = require("prompt-sync")({sigint: true});
 
-var affirmationsjson = fs.readFileSync(path.resolve('.', './affirmations.json'), {'encoding': 'utf-8'});
+var affirmationsjson = fs.readFileSync(path.resolve('.', './affirmation_db.json'), {'encoding': 'utf-8'});
 var affirmationsparsed = JSON.parse(affirmationsjson);
 
 var currentAffirmation = null;
@@ -12,6 +12,11 @@ var previousAffirmation = null;
 
 const affirmationSocket = new zmq.Push();
 affirmationSocket.connect("tcp://127.0.0.1:3001"); // Use a new port for the producer to connect to
+
+function refreshAffirmations(){
+    affirmationsjson = fs.readFileSync(path.resolve('.', './affirmation_db.json'), {'encoding': 'utf-8'});
+    affirmationsparsed = JSON.parse(affirmationsjson);
+}
 
 async function addAffirmation(someText) {
     affirmationSocket.send(`add text:${someText}`);
@@ -37,7 +42,10 @@ if editing:
 
 
 function getRandomAffirmation(){
-    previousAffirmation = currentAffirmation;
+    if(currentAffirmation != null){
+        previousAffirmation = currentAffirmation;
+    }
+    refreshAffirmations();
     var randAffirmationIndex= Math.floor(Math.random() * affirmationsparsed.length);
     currentAffirmation = affirmationsparsed[randAffirmationIndex].text;
     return currentAffirmation;
@@ -74,6 +82,7 @@ function printMoreInfo(){
 }
 
 function printAffirmationAndOptions(){
+    getRandomAffirmation();
     console.log('');
     console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
     console.log('');
@@ -102,9 +111,7 @@ function infoPage(){
     printMoreInfo();
 }
 
-function affirmationPage(){
-    console.clear();    
-    getRandomAffirmation();
+function affirmationPage(){  
     printAffirmationAndOptions();
 }
 
@@ -167,6 +174,7 @@ function action(){
 
 printWelcomeMessage();
 deleteAffirmation('test1');
+addAffirmation('test2');
 while(true){
     action();
 }
