@@ -4,7 +4,7 @@ const path = require('path');
 
 const db_fname = "affirmation_db.json";
 
-function getAffirmations() {
+function getAllAffirmations() {
     try {
         const affirmationsJson = fs.readFileSync(path.resolve('.', `./${db_fname}`), { 'encoding': 'utf-8' });
         return JSON.parse(affirmationsJson);
@@ -14,20 +14,20 @@ function getAffirmations() {
     }
 }
 
-function saveAffirmations(affirmations) {
+function saveAllAffirmations(allAffirmations) {
     try {
-        fs.writeFileSync(path.resolve('.', `./${db_fname}`), JSON.stringify(affirmations, null, 2));
+        fs.writeFileSync(path.resolve('.', `./${db_fname}`), JSON.stringify(allAffirmations, null, 2));
     } catch (e) {
         console.error("Error writing affirmation database:", e);
     }
 }
 
 function deleteAffirmation(someText) {
-    const affirmations = getAffirmations();
-    const indexToDelete = affirmations.findIndex((affirmation) => affirmation.text === someText);
+    const allAffirmations = getAllAffirmations();
+    const indexToDelete = allAffirmations.findIndex((affirmation) => affirmation.text === someText);
     if (indexToDelete !== -1) {
-        affirmations.splice(indexToDelete, 1);
-        saveAffirmations(affirmations);
+        allAffirmations.splice(indexToDelete, 1);
+        saveAllAffirmations(allAffirmations);
     } else {
         console.log("Issue deleting affirmation");
     }
@@ -44,7 +44,7 @@ async function run() {
         console.log(message);
         if(message.startsWith("delete affirmation:")){
             deleteAffirmation(message.substring(19));
-            console.log("Affirmation log updated: ", getAffirmations());
+            console.log("Affirmation log updated: ", getAllAffirmations());
         } else if(message.startsWith("exit")){
             console.log("Worker exiting...");   
             break;

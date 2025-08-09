@@ -15,6 +15,8 @@ const addAffirmationSocket = new zmq.Push();
 addAffirmationSocket.connect("tcp://127.0.0.1:3001");
 const deleteAffirmationSocket = new zmq.Push();
 deleteAffirmationSocket.connect("tcp://127.0.0.1:3002");
+const addTagSocket = new zmq.Push();
+addTagSocket.connect("tcp://127.0.0.1:3003");
 
 function refreshAffirmations(){
 
@@ -26,14 +28,17 @@ function refreshAffirmations(){
     }
 }
 
-async function addAffirmation(someText) {
-    addAffirmationSocket.send(`add text:${someText}`);
+async function addAffirmation(currentAffirmationText) {
+    addAffirmationSocket.send(`add text:${currentAffirmationText}`);
 }
 
-async function microserviceDeleteAffirmation(someText) {
-    deleteAffirmationSocket.send(`delete affirmation:${someText}`);
+async function microserviceDeleteAffirmation(currentAffirmationText) {
+    deleteAffirmationSocket.send(`delete affirmation:${currentAffirmationText}`);
 }
 
+async function microserviceAddTag(formatedString) {
+    addTagSocket.send("add tag:"+formatedString);
+}
 
 
 function getRandomAffirmation(){
@@ -153,6 +158,25 @@ function deleteAffirmation(){
     }
 }
 
+function addTag(){
+    if(currentAffirmation != null){
+        microserviceAddTag(currentAffirmation.text+'&'+prompt("Enter your new tag: ").trim());
+        console.log('');
+        console.log('Tag added successfully!');
+        console.log('');
+        getRandomAffirmation();
+        printAffirmationAndOptions();
+    }else{
+        console.log('');
+        console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
+        console.log('');
+        console.log('No affirmation selected!');
+        console.log('');
+        console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
+        console.log('');
+    }
+}
+
 function action(){
 
     userAction = prompt('Desired action: ');
@@ -176,6 +200,8 @@ function action(){
         addNewAffirmation();
     } else if (userAction == 'd') {
         deleteAffirmation();
+    }else if (userAction == 't') {
+        addTag();
     }else{
         console.log('');
         console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');

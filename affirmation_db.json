@@ -1,8 +1,14 @@
 [
   {
-    "text": "a",
+    "text": "testing tags affirmation",
     "id": null,
-    "tags": null,
+    "tags": [
+      "test1",
+      "test2",
+      "tesldkfjalksfedjxka;sdjfljokEjr902wj0eodsifmcx",
+      "&",
+      "&works anyways&finds&first"
+    ],
     "Ratings": null
   }
 ]
