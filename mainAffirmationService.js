@@ -10,8 +10,11 @@ var affirmationsparsed = JSON.parse(affirmationsjson);
 var currentAffirmation = null;
 var previousAffirmation = null;
 
-const affirmationSocket = new zmq.Push();
-affirmationSocket.connect("tcp://127.0.0.1:3001"); // Use a new port for the producer to connect to
+//set up sockets for various microservices
+const addAffirmationSocket = new zmq.Push();
+addAffirmationSocket.connect("tcp://127.0.0.1:3001");
+const deleteAffirmationSocket = new zmq.Push();
+deleteAffirmationSocket.connect("tcp://127.0.0.1:3002");
 
 function refreshAffirmations(){
     affirmationsjson = fs.readFileSync(path.resolve('.', './affirmation_db.json'), {'encoding': 'utf-8'});
@@ -19,26 +22,13 @@ function refreshAffirmations(){
 }
 
 async function addAffirmation(someText) {
-    affirmationSocket.send(`add text:${someText}`);
+    addAffirmationSocket.send(`add text:${someText}`);
 }
 
-async function deleteAffirmation(someText) {
-    affirmationSocket.send(`delete affirmation:${someText}`);
+async function microserviceDeleteAffirmation(someText) {
+    deleteAffirmationSocket.send(`delete affirmation:${someText}`);
 }
 
-
-/*Format for affirmation modifications, 
-
-first char is:
-    0 if removing an affirmation, 1 if adding an affirmation, 2 if editing an affirmation
-if editing:
-    second char is:
-        id of the target affirmation
-    third char is:
-        which part of the affirmation to edit, 0 for text, 1 for tags, 2 for ratings
-    next part is:
-        the new value for the part of the affirmation to edit
-*/
 
 
 function getRandomAffirmation(){
@@ -47,7 +37,7 @@ function getRandomAffirmation(){
     }
     refreshAffirmations();
     var randAffirmationIndex= Math.floor(Math.random() * affirmationsparsed.length);
-    currentAffirmation = affirmationsparsed[randAffirmationIndex].text;
+    currentAffirmation = affirmationsparsed[randAffirmationIndex];
     return currentAffirmation;
 }
 
@@ -86,7 +76,7 @@ function printAffirmationAndOptions(){
     console.log('');
     console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
     console.log('');
-    console.log(currentAffirmation);
+    console.log(currentAffirmation.text);
     console.log('');
     console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
     console.log('');
@@ -132,11 +122,29 @@ function addNewAffirmation(){
     console.clear();
     console.log('Enter your new affirmation: ');
     var affirmation = prompt();
-    addAffirmation(affirmation);
+    addAffirmation(affirmation.text);
     console.log('');
     console.log('Affirmation added successfully!');
     console.log('');
     printAffirmationAndOptions();
+}
+
+function deleteAffirmation(){
+    if(currentAffirmation != null){
+        microserviceDeleteAffirmation(currentAffirmation.text);
+        console.log('');
+        console.log('Affirmation deleted successfully!');
+        console.log('');
+        printAffirmationAndOptions();
+    }else{
+        console.log('');
+        console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
+        console.log('');
+        console.log('No affirmation selected!');
+        console.log('');
+        console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
+        console.log('');
+    }
 }
 
 function action(){
@@ -160,10 +168,15 @@ function action(){
 
     } else if (userAction == 'n') {
         addNewAffirmation();
-        
+    } else if (userAction == 'd') {
+        deleteAffirmation();
     }else{
         console.log('');
+        console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
+        console.log('');
         console.log('Invalid input, please try again...');
+        console.log('');
+        console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
         console.log('');
     }
 
@@ -173,8 +186,6 @@ function action(){
 //Program begins, loops till graceful exit is triggered
 
 printWelcomeMessage();
-deleteAffirmation('test1');
-addAffirmation('test2');
 while(true){
     action();
 }

@@ -17,20 +17,20 @@ function addTag(currentAffirmation) {
 async function run() {
     // Use a Reply socket to respond to the main service
     const sock = new zmq.Reply();
-    await sock.bind("tcp://127.0.0.1:3002");
+    await sock.bind("tcp://127.0.0.1:3001");
 
-    console.log("Worker bound to port 3002");
+    console.log("Worker bound to port 3001");
 
     for await (const [msg] of sock) {
         const message = msg.toString();
         let reply;
 
-        if (message.substring(0, 8) === "add tag:") {
+        if (message.startsWith("add tag:")) {
             console.log("Adding tag to affirmation...");
             const tag = message.substring(8);
             reply = addTag(currentAffirmation);
             console.log("Tag addition result:", reply);
-        } else if (message.substring(0, 4) === "exit") {
+        } else if (message.startsWith("exit")) {
             console.log("Worker exiting...");
             await sock.send('exiting');
             break;
