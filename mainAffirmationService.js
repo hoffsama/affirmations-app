@@ -17,6 +17,8 @@ const deleteAffirmationSocket = new zmq.Push();
 deleteAffirmationSocket.connect("tcp://127.0.0.1:3002");
 const addTagSocket = new zmq.Push();
 addTagSocket.connect("tcp://127.0.0.1:3003");
+const addRatingSocket = new zmq.Push();
+addRatingSocket.connect("tcp://127.0.0.1:3004");
 
 function refreshAffirmations(){
 
@@ -38,6 +40,10 @@ async function microserviceDeleteAffirmation(currentAffirmationText) {
 
 async function microserviceAddTag(formatedString) {
     addTagSocket.send("add tag:"+formatedString);
+}
+
+async function microserviceAddRating(formatedString){
+    addRatingSocket.send("add rating:"+formatedString);
 }
 
 
@@ -177,6 +183,25 @@ function addTag(){
     }
 }
 
+function addRating(){
+    if(currentAffirmation != null){
+        microserviceAddRating(currentAffirmation.text+'&'+prompt("How much do you agree with this affirmation? (0-10): ").trim()+"@"+Date.now());
+        console.log('');
+        console.log('Rating added successfully!');
+        console.log('');
+        getRandomAffirmation();
+        printAffirmationAndOptions();
+    }else{
+        console.log('');
+        console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
+        console.log('');
+        console.log('No affirmation selected!');
+        console.log('');
+        console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');
+        console.log('');
+    }
+}
+
 function action(){
 
     userAction = prompt('Desired action: ');
@@ -202,6 +227,8 @@ function action(){
         deleteAffirmation();
     }else if (userAction == 't') {
         addTag();
+    }else if (userAction == 'r') {
+        addRating();
     }else{
         console.log('');
         console.log('✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿  ✿');

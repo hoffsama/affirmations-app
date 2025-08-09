@@ -63,7 +63,7 @@ def process_data(data):
             errors.append(data)
             success = False
     elif isinstance(data,str):
-        db_data.append({'text':data,"id":None,"tags":None,"Ratings":None})
+        db_data.append({'text':data,"id":None,"tags":None,"ratings":None})
         success=True
     else:
         print("Unrecognized Data format")

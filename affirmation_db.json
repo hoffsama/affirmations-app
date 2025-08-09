@@ -1,14 +1,8 @@
 [
   {
-    "text": "testing tags affirmation",
+    "text": "replaces all",
     "id": null,
-    "tags": [
-      "test1",
-      "test2",
-      "tesldkfjalksfedjxka;sdjfljokEjr902wj0eodsifmcx",
-      "&",
-      "&works anyways&finds&first"
-    ],
-    "Ratings": null
+    "tags": null,
+    "ratings": null
   }
 ]
